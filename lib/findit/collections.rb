@@ -85,11 +85,12 @@ module Findit
     end
 
     def call
-      raise NotImplementedError
     end
+    undef :call
 
     def data
-      @data ||= call
+      return @data if defined?(@data)
+      @data = call
     end
   end
 end
