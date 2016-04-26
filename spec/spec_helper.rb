@@ -1,7 +1,7 @@
 require 'bundler/setup'
 require 'simplecov'
 SimpleCov.start 'rails' do
-  minimum_coverage 95
+  minimum_coverage 93
 
   add_filter 'findit/version'
 end

@@ -50,11 +50,20 @@ RSpec.describe Findit do
     end
   end
 
-  describe '#cache_methods' do
+  describe '#total_entries' do
     let(:cache_key) { cache_key = ActiveSupport::Cache.expand_cache_key([user.id, query]) }
     it 'cache method' do
-      expect(Rails.cache).to receive(:fetch).with("#{cache_key}/first_post", cache_tags: {user_id: user.id}, expire_in: 30.minutes)
-      finder.first_post
+      expect(Rails.cache).to receive(:fetch).with("#{cache_key}/total_entries", cache_tags: {user_id: user.id}, expire_in: 30.minutes)
+      finder.total_entries
     end
   end
+
+  describe '#total_pages' do
+    let(:cache_key) { cache_key = ActiveSupport::Cache.expand_cache_key([user.id, query]) }
+    it 'cache method' do
+      expect(Rails.cache).to receive(:fetch).with("#{cache_key}/total_pages", cache_tags: {user_id: user.id}, expire_in: 30.minutes)
+      finder.total_pages
+    end
+  end
+
 end
