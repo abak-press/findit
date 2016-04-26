@@ -19,15 +19,15 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_runtime_dependency 'rails', '>= 3.1'
+  spec.add_runtime_dependency 'rails-cache-tags', '>= 1.3.1'
 
   spec.add_development_dependency "rake", "~> 10.0"
-  spec.add_development_dependency "rspec", "~> 3.0"
-  spec.add_development_dependency 'rspec-rails'
+  spec.add_development_dependency "rspec", ">= 3.2"
+  spec.add_development_dependency "rspec-rails", ">= 3.2"
   spec.add_development_dependency 'combustion', '~> 0.5'
-  spec.add_development_dependency 'appraisal'
+  spec.add_development_dependency "appraisal", ">= 2.1.0"
   spec.add_development_dependency 'pry-debugger'
   spec.add_development_dependency 'shoulda-matchers', '< 3.0.0'
   spec.add_development_dependency 'simplecov'
-  spec.add_development_dependency 'database_cleaner'
   spec.add_development_dependency 'sqlite3'
 end

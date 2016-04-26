@@ -1,6 +1,6 @@
-require 'activesupport'
+require 'rails'
 require "findit/version"
-require 'findit/cachable'
+require 'findit/collections'
 
 module Findit
 end

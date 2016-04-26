@@ -1,2 +1,3 @@
 test:
-  adapter: sqllite
+  adapter: sqlite3
+  database: test

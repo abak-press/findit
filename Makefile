@@ -7,13 +7,8 @@ APPRAISAL = appraisal
 
 all: test
 
-test: config/database bundler/install appraisal/install
+test: bundler/install appraisal/install
 	${BUNDLE} exec ${APPRAISAL} ${RSPEC} spec 2>&1
-
-config/database:
-	touch spec/internal/config/database.yml
-	echo 'test:' > spec/internal/config/database.yml
-	echo '  adapter: sqllite' >> spec/internal/config/database.yml
 
 bundler/install:
 	gem install bundler --version=${BUNDLE_VERSION};

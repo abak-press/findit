@@ -1,27 +1,26 @@
 class PostFinder
-  include Findit::Cachable
+  include Findit::Collections
 
-  cache_methods first_post: :expire_in, :results_size, last_post: { expire_in: :expire_in_last_post }
+  cache_methods :first, :last
 
-  attr_accessor :user_id, :query
+  cache_key do
+    [@user.id, @query]
+  end
+
+  cache_tags do
+    {user_id: @user.id}
+  end
+
+  expire_in 30.minutes
+
+  def initialize(user, options = {})
+    @user = user
+    @query = options[:query]
+  end
 
   def call
-    return [] if user_id.blank? && query.blank?
-    scope = Post
-    scope = scope.where(user_id: user_id) if user_id.present?
-    scope = scope.where('description like :query', query: query) if query.present?
+    scope = Post.where(user_id: @user.id)
+    scope = scope.where('text like :query', query: "%#{@query}%") if @query.present?
     scope
-  end
-
-  def first_post
-    data.first
-  end
-
-  def last_post
-    data.last
-  end
-
-  def results_size
-    data.size
   end
 end
