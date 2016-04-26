@@ -55,8 +55,7 @@ module Findit
     module ClassMethods
       def cache_method(method)
         define_method(method) do
-          key = ActiveSupport::Cache.expand_cache_key(cache_key)
-          Rails.cache.fetch("#{key}/#{method}", cache_tags: cache_tags, expire_in: expire_in) do
+          Rails.cache.fetch("#{cache_key}/#{method}", cache_tags: cache_tags, expire_in: expire_in) do
             data.public_send(method)
           end
         end
@@ -68,7 +67,7 @@ module Findit
 
       def cache_key(&block)
         define_method :cache_key do
-          @cache_key ||= instance_exec(&block)
+          @cache_key ||= ActiveSupport::Cache.expand_cache_key(instance_exec(&block))
         end
       end
 
