@@ -28,45 +28,45 @@ It makes Finder work as Enumerator with `each`, `[]` and `size` methods. For fet
 For easier caching expirience we provide DSL to define you dependency for `cache_key` and `cache_tags` or/and `expire_in` (for invalidation)
 
 Full example with (rails-cache-tags)[https://github.com/take-five/rails-cache-tags]:
-```
-  #/app/finders/posts_finders.rb
-  class PostFinder
-    include Findit::Collections
+```ruby
+#/app/finders/posts_finders.rb
+class PostFinder
+  include Findit::Collections
 
-    cache_key do
-      [@user.id, @query] # here you put any stuff that result of finder depend on it
-    end
-
-    cache_tags do
-      {user_id: @user.id} # cache tags for invalidation
-    end
-
-    # Or/And you can use time invalidation
-    expire_in 30.minutes # just value
-
-    def initialize(user, options = {})
-      @user = user
-      @query = options[:query]
-    end
-
-    # Here we fetch results
-    def call
-      scope = scope.where(user_id: @user.id)
-      scope = scope.where('description like :query', query: @query) if @query.present?
-      scope
-    end
+  cache_key do
+    [@user.id, @query] # here you put any stuff that result of finder depend on it
   end
 
-  #/app/controllers/posts_controller.rb
-  class SomeController < ApplicationController
-    def index
-      @post_finder = PostFinder.new(user: current_user)
-    end
+  cache_tags do
+    {user_id: @user.id} # cache tags for invalidation
   end
 
-  #/app/views/posts/index.html.haml
-  - cache(@post_finder, tags: @post_finder.cache_tags, expire_in: @post_finder.expire_in) do
-    =render 'post' colection: @post_finder, as: :post # it will automaticly iterate over finder results by each method
+  # Or/And you can use time invalidation
+  expire_in 30.minutes # just value
+
+  def initialize(user, options = {})
+    @user = user
+    @query = options[:query]
+  end
+
+  # Here we fetch results
+  def call
+    scope = scope.where(user_id: @user.id)
+    scope = scope.where('description like :query', query: @query) if @query.present?
+    scope
+  end
+end
+
+#/app/controllers/posts_controller.rb
+class SomeController < ApplicationController
+  def index
+    @post_finder = PostFinder.new(user: current_user)
+  end
+end
+
+#/app/views/posts/index.html.haml
+- cache(@post_finder, tags: @post_finder.cache_tags, expire_in: @post_finder.expire_in) do
+   =render 'post' colection: @post_finder, as: :post # it will automaticly iterate over finder results by each method
 
 ```
 
@@ -76,7 +76,7 @@ Caching of (will_paginate)[] `total_pages` and `total_entries` methods.
 To use it you *must* implement `data` method. Or you can combine it with Collections described earlier
 
 Usage with Collection
-```
+```ruby
 # /app/finders/post_finder.rb
 class PostFinder
   include Finder::Pagination
