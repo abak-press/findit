@@ -3,30 +3,30 @@
 #
 #  /app/finders/post_finder.rb
 # class PostFinder
-#   include Finder::Pagination
+#   include Findit::Collections
+#   include Findit::Pagination
 #
-#   def initialize(options)
-#     @cache_key = options.fetch(:cache_key)
-#     @conditions = options.fetch(:conditions)
-#     @page = options[:page] if options[:page].present?
-#     @per_page = options[:per_page] if options[:per_page].present?
+#   cache_key do
+#     "#{user}/#{page}"
 #   end
 #
-#   def data
-#     @data ||= Rails.cache.fetch(cache_key) do
-#       scope = Post.where(conditions)
-#       scope.paginate(page, per_page, scope.count)
-#       scope
-#     end
+#   def initialize(params)
+#     @user = options.fetch(:user)
+#     @page = options[:page] if options[:page].present?
+#   end
+#
+#   def call
+#     scope = Post.where(conditions)
+#     scope.paginate(page, per_page, scope.count)
+#     scope
 #   end
 # end
 #
 # /app/controllers/post_controller.rb
 # class PostsController < ApplicationController
 #   def index
-#     @posts = PostFinder(
-#       cache_key: "posts/#{current_user}/#{params[:page]}",
-#       conditions: { user: current_user }
+#     @posts = PostFinder.new(
+#       user: current_user
 #       page: params[:page]
 #     )
 #     response.headers['X-TOTAL-PAGES'] = @posts.total_pages
