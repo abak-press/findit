@@ -28,7 +28,7 @@ end
 ```
 
 Do this!
-```
+```ruby
 # /app/controllers/some_controller.rb
 class SomeController
   def index
@@ -55,14 +55,14 @@ end
 ```
 
 And that it! Now you can iterate over finder results by simple each:
-```
+```ruby
 @scope - SomeFinder.new(params)
 @scope.each do |d|
   print d
 end
 ``
 Or perform caching like you'll do it with ActiveRecord
-```
+```ruby
 # app/some_view
 <% cache @scope do %>
   <%scope.each do |res|%>
