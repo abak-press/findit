@@ -15,13 +15,14 @@ class PostFinder
   def initialize(user, options = {})
     @user = user
     @query = options[:query]
-    @page = options[:page] || 1
+    @page = options[:page] if options[:page].present?
+    @per_page = options[:per_page] if options[:per_page].present?
   end
 
   def call
     scope = Post.where(user_id: @user.id)
     scope = scope.where('text like :query', query: "%#{@query}%") if @query.present?
-    scope = scope.paginate(page: @page, per_page: 5, total_entries: scope.count)
+    scope = scope.paginate(page: page, per_page: per_page, total_entries: scope.count)
     scope
   end
 

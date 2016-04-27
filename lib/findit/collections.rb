@@ -7,8 +7,6 @@
 #  class PostFinder
 #    include Findit::Collections
 #
-#    cache_method :first
-#
 #    cache_key do
 #      [@user.id, @query]
 #    end
