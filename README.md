@@ -27,7 +27,7 @@ It makes Finder work as Enumerator with `each`, `[]` and `size` methods. For fet
 
 For easier caching expirience we provide DSL to define you dependency for `cache_key` and `cache_tags` or/and `expire_in` (for invalidation)
 
-Full example with (rails-cache-tags)[https://github.com/take-five/rails-cache-tags]:
+Full example with [rails-cache-tags](https://github.com/take-five/rails-cache-tags):
 ```ruby
 #/app/finders/posts_finders.rb
 class PostFinder
@@ -72,7 +72,7 @@ end
 
 ### Pagination Caching
 
-Caching of (will_paginate)[] `total_pages` and `total_entries` methods.
+Caching of [will_paginate](https://github.com/mislav/will_paginate) `total_pages` and `total_entries` methods.
 To use it you *must* implement `data` method. Or you can combine it with Collections described earlier
 
 Usage with Collection
