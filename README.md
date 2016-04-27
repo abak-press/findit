@@ -10,7 +10,7 @@ class SomeController
     @cache_key = (
       # many_values
     )
-    retutrn if fragment_exists?(@cache_key)
+    return if fragment_exists?(@cache_key)
     search_scope = SearchEngine.scope
     search_scope.add(some_conditions)
     search_scope.add(some_conditions)
@@ -19,15 +19,14 @@ class SomeController
     search_scope.add(some_conditions)
     search_scope.add(some_conditions)
     search_scope.add(some_conditions)
-    result = search_scope.search_and_retun_ids
+    result = search_scope.search_and_return_ids
     @scope = scope.where(ids: result)
-
-
+    ....
   end
 end
 ```
 
-Do this!
+Do this:
 ```ruby
 # /app/controllers/some_controller.rb
 class SomeController
@@ -58,10 +57,10 @@ And that it! Now you can iterate over finder results by simple each:
 ```ruby
 @scope = SomeFinder.new(params)
 @scope.each do |d|
-  print d
+  print d.description
 end
 ```
-Or perform caching like you'll do it with ActiveRecord
+or perform caching like you'll do it with ActiveRecord
 ```ruby
 # app/some_view
 <% cache @scope do %>
@@ -92,9 +91,9 @@ Or install it yourself as:
 
 ### Collections
 
-It makes Finder work as Enumerator . Result can be accessed with `each`, `[]` and `size` methods, but for make things work you *must* implement `call` method. Also you can access result direcly by using `data` method.
+It make Finder work as Enumerator . Result can be accessed with `each`, `[]` and `size` methods, but for make things work you *must* implement `call` method. Also you can access result direcly by using `data` method.
 
-For easier caching expirience we provide DSL to define you dependency for `cache_key` and `cache_tags` or/and `expire_in` (for invalidation)
+For easier caching expirience we provide DSL to define you custom `cache_key`, `cache_tags` or/and `expire_in` (for invalidation)
 
 Full example with [rails-cache-tags](https://github.com/take-five/rails-cache-tags):
 ```ruby
@@ -144,7 +143,7 @@ end
 Caching of [will_paginate](https://github.com/mislav/will_paginate) `total_pages` and `total_entries` methods.
 To use it you *must* implement `data` method. Or you can combine it with Collections described earlier
 
-Usage with Collection
+Example uage with Collection
 ```ruby
 # /app/finders/post_finder.rb
 class PostFinder
@@ -192,7 +191,6 @@ json.cache! @posts, expire_in: @posts.expire_in do
   json.partial! 'post', collection: @posts, as: :post
 end
 ```
-
 
 ## Contributing
 
