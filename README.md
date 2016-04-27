@@ -60,7 +60,7 @@ And that it! Now you can iterate over finder results by simple each:
 @scope.each do |d|
   print d
 end
-``
+```
 Or perform caching like you'll do it with ActiveRecord
 ```ruby
 # app/some_view
