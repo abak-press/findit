@@ -22,17 +22,23 @@
 # end
 #
 # /app/controllers/post_controller.rb
-# class PostCOntroller < ApplicationController
+# class PostsController < ApplicationController
 #   def index
-#     result = PostFinder(
+#     @posts = PostFinder(
 #       cache_key: "posts/#{current_user}/#{params[:page]}",
 #       conditions: { user: current_user }
 #       page: params[:page]
 #     )
-#
-#     render json: { posts: result, pages: result.total_pages }
+#     response.headers['X-TOTAL-PAGES'] = @posts.total_pages
+#     response.hesders['X-TOTAL-ENTRIES'] = @posts.total_entries
 #   end
 # end
+#
+# /app/views/posts/post.json.jbuilder
+# json.cache! @posts do
+#   json.partial! 'posts', collection: @posts, as: :post
+# end
+#
 module Findit
   module Pagination
     def page

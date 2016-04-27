@@ -1,8 +1,8 @@
 # Findit
 
-Tried of writhing fat controllers? But you must do all these queries.. There is a solution, move all this stuff to Finder class.
+Tied of writing fat controllers? But you must do all these queries.. There is a solution, move all this stuff to Finder class.
 
-Itstead of writing
+Instead of writing
 
 ```ruby
 class SomeController
@@ -56,7 +56,7 @@ end
 
 And that it! Now you can iterate over finder results by simple each:
 ```ruby
-@scope - SomeFinder.new(params)
+@scope = SomeFinder.new(params)
 @scope.each do |d|
   print d
 end
@@ -71,9 +71,6 @@ Or perform caching like you'll do it with ActiveRecord
 <%end%>
 
 ```
-
-A collection of modules for customization your finders.
-Require rails >= 3.1 and ruby >= 1.9.3.
 
 ## Installation
 
@@ -130,15 +127,15 @@ class PostFinder
 end
 
 #/app/controllers/posts_controller.rb
-class SomeController < ApplicationController
+class PostsController < ApplicationController
   def index
-    @post_finder = PostFinder.new(user: current_user)
+    @posts = PostFinder.new(user: current_user)
   end
 end
 
 #/app/views/posts/index.html.haml
-<% cache(@post_finder, tags: @post_finder.cache_tags, expire_in: @post_finder.expire_in) do %>
-   <%=render 'post' colection: @post_finder, as: :post%> # it will automaticly iterate over finder results by each method
+<% cache(@posts, tags: @posts.cache_tags, expire_in: @posts.expire_in) do %>
+   <%=render 'post' colection: @posts, as: :post%> # it will automaticly iterate over finder results by each method
 
 ```
 
@@ -151,35 +148,48 @@ Usage with Collection
 ```ruby
 # /app/finders/post_finder.rb
 class PostFinder
-  include Finder::Pagination
+  include Findit::Collection
+  include Findit::Pagination
+
+  cache_key do
+    ...
+  end
+
+  expire_in do
+    ...
+  end
 
   def initialize(options)
-    @cache_key = options.fetch(:cache_key)
     @conditions = options.fetch(:conditions)
     @page = options[:page] if options[:page].present?
     @per_page = options[:per_page] if options[:per_page].present?
   end
 
-  def data
-    @data ||= Rails.cache.fetch(cache_key) do
-      scope = Post.where(conditions)
-      scope.paginate(page, per_page, scope.count)
-      scope
-    end
+  def call
+    scope = Post.where(conditions)
+    scope.paginate(page, per_page, scope.count)
+    scope
   end
 end
 
-# /app/controllers/post_controller.rb
-class PostCOntroller < ApplicationController
+# /app/controllers/posts_controller.rb
+class PostsController < ApplicationController
   def index
-    result = PostFinder(
+    @posts = PostFinder(
       cache_key: "posts/#{current_user}/#{params[:page]}",
       conditions: { user: current_user }
       page: params[:page]
     )
 
-    render json: { posts: result, pages: result.total_pages, total: result.total_entries }
+    # Queries will run only when on non-cached records
+    response.headers['X-TOTAL-PAGES'] = @posts.total_pages
+    response.headers['X-TOTAL-ENTRIES'] = @posts.total_entries
   end
+end
+
+# /app/views/posts/index.json.jbuilder
+json.cache! @posts, expire_in: @posts.expire_in do
+  json.partial! 'post', collection: @posts, as: :post
 end
 ```
 

@@ -30,15 +30,15 @@
 #  end
 #
 #  #/app/controllers/posts_controller.rb
-#  class SomeController < ApplicationController
+#  class PostsController < ApplicationController
 #    def index
-#      @post_finder = PostFinder.new(user: current_user)
+#      @posts = PostFinder.new(user: current_user)
 #    end
 #  end
 #
 #  #/app/views/posts/index.html.erb
-#  <% cache(@post_finder, tags: @post_finder.cache_tags, expire_in: @post_finder.expire_in) do %>
-#    <%= render 'post' colection: @post_finder, as: :post%>
+#  <% cache(@posts, tags: @posts.cache_tags, expire_in: @posts.expire_in) do %>
+#    <%= render 'post' colection: @posts, as: :post%>
 #
 #
 module Findit
