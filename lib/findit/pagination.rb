@@ -16,7 +16,7 @@
 #   end
 #
 #   def call
-#     scope = Post.where(conditions)
+#     scope = Post.where(user: user)
 #     scope.paginate(page, per_page, scope.count)
 #     scope
 #   end

@@ -139,9 +139,8 @@ end
 ```
 
 ### Pagination Caching
-
-Caching of [will_paginate](https://github.com/mislav/will_paginate) `total_pages` and `total_entries` methods.
-To use it you *must* implement `data` method. Or you can combine it with Collections described earlier
+Implement page and per_page with defaults 1 and 30 respectively. Also it adds caching of [will_paginate](https://github.com/mislav/will_paginate) `total_pages` and `total_entries` methods.
+To use it you *must* implement `data` method. Or you can combine it with Collections described earlier.
 
 Example uage with Collection
 ```ruby
@@ -159,13 +158,13 @@ class PostFinder
   end
 
   def initialize(options)
-    @conditions = options.fetch(:conditions)
+    @user = options.fetch(:user)
     @page = options[:page] if options[:page].present?
     @per_page = options[:per_page] if options[:per_page].present?
   end
 
   def call
-    scope = Post.where(conditions)
+    scope = Post.where(user: user)
     scope.paginate(page, per_page, scope.count)
     scope
   end
@@ -175,8 +174,7 @@ end
 class PostsController < ApplicationController
   def index
     @posts = PostFinder(
-      cache_key: "posts/#{current_user}/#{params[:page]}",
-      conditions: { user: current_user }
+      user: current_user
       page: params[:page]
     )
 
