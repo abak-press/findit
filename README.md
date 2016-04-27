@@ -1,8 +1,8 @@
 # Findit
 
-Tired of writing fat controllers? But you must do all these queries.. There is a solution, move all this stuff to Finder class.
+Tired of writing fat controllers? But you must do all these queries.. There is a solution, move it to a Finder class.
 
-Instead of writing
+Don't write this:
 
 ```ruby
 class SomeController
@@ -26,7 +26,7 @@ class SomeController
 end
 ```
 
-Do this:
+Just do this:
 ```ruby
 # /app/controllers/some_controller.rb
 class SomeController
@@ -53,7 +53,7 @@ class SomeFinder
 end
 ```
 
-And that it! Now you can iterate over finder results by simple each:
+And that it! Now you can iterate over finder results by simple `each`:
 ```ruby
 @scope = SomeFinder.new(params)
 @scope.each do |d|
@@ -91,7 +91,7 @@ Or install it yourself as:
 
 ### Collections
 
-It make Finder work as Enumerator . Result can be accessed with `each`, `[]` and `size` methods, but for make things work you *must* implement `call` method. Also you can access result direcly by using `data` method.
+It makes Finder work as Enumerator. Result can be accessed with `each`, `[]` and `size` methods, but to make things work you *must* implement `call` method. Also you can access result direcly by using `data` method.
 
 For easier caching expirience we provide DSL to define you custom `cache_key`, `cache_tags` or/and `expire_in` (for invalidation)
 
@@ -106,18 +106,19 @@ class PostFinder
   end
 
   cache_tags do
-    {user_id: @user.id} # cache tags for invalidation
+    {user_id: @user.id} # cache tags for invalidation from rails-cache-tags gem
   end
 
   # Or/And you can use time invalidation
   expire_in 30.minutes # just value
 
+  # custom initializer, do whatever you want here
   def initialize(user, options = {})
     @user = user
     @query = options[:query]
   end
 
-  # Here we fetch results
+  # Here we fetch results. You MUST implement it
   def call
     scope = scope.where(user_id: @user.id)
     scope = scope.where('description like :query', query: @query) if @query.present?
