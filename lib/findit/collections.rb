@@ -1,6 +1,4 @@
 #
-#  Module for lazy load of result collection for finder
-#
 #  Example usage:
 #
 #  #/app/finders/posts_finders.rb
@@ -39,7 +37,6 @@
 #  #/app/views/posts/index.html.erb
 #  <% cache(@posts, tags: @posts.cache_tags, expire_in: @posts.expire_in) do %>
 #    <%= render 'post' colection: @posts, as: :post%>
-#
 #
 module Findit
   module Collections
