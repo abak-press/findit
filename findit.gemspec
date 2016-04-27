@@ -9,8 +9,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Denis Korobicyn"]
   spec.email         = ["deniskorobitcin@gmail.com"]
 
-  spec.summary       = %q{Finder patther}
-  spec.description   = %q{Fix you fat controller by moving all search logic to finder class}
+  spec.summary       = %q{Extensions for Finder classes}
   spec.homepage      = "https://github.com/abak-press/findit"
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }

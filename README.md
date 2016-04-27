@@ -1,5 +1,77 @@
 # Findit
 
+Tried of writhing fat controllers? But you must do all these queries.. There is a solution, you separate Finder class.
+
+Itstead of writing
+
+```ruby
+class SomeController
+  def index
+    @cache_key = (
+      # many_values
+    )
+    retutrn if fragment_exists?(@cache_key)
+    search_scope = SearchEngine.scope
+    search_scope.add(some_conditions)
+    search_scope.add(some_conditions)
+    search_scope.add(some_conditions)
+    search_scope.add(some_conditions)
+    search_scope.add(some_conditions)
+    search_scope.add(some_conditions)
+    search_scope.add(some_conditions)
+    result = search_scope.search_and_retun_ids
+    @scope = scope.where(ids: result)
+
+
+  end
+end
+```
+
+Do this!
+```
+# /app/controllers/some_controller.rb
+class SomeController
+  def index
+    @scope = SomeFinder.new(params)
+  end
+end
+
+# app/finders/some_finder.rb
+class SomeFinder
+  include Findit::Collections
+
+  cache_key do
+    # calculate you cache_key from params
+  end
+
+  def initialize(params)
+    # some initialize, maybe params parse
+  end
+
+  def call
+    # put here you find logic
+  end
+end
+```
+
+And that it! Now you can iterate over finder results by simple each:
+```
+@scope - SomeFinder.new(params)
+@scope.each do |d|
+  print d
+end
+``
+Or perform caching like you'll do it with ActiveRecord
+```
+# app/some_view
+<% cache @scope do %>
+  <%scope.each do |res|%>
+    ...
+  <%end%>
+<%end%>
+
+```
+
 A collection of modules for customization your finders.
 Require rails >= 3.1 and ruby >= 1.9.3.
 
@@ -19,11 +91,11 @@ Or install it yourself as:
 
     $ gem install findit
 
-## Usage
+## Per module documentation
 
 ### Collections
 
-It makes Finder work as Enumerator with `each`, `[]` and `size` methods. For fetch result that can be accessed with these method you *must* implement `call` method. Also you can access result direcly by using `data` method
+It makes Finder work as Enumerator . Result can be accessed with `each`, `[]` and `size` methods, but for make things work you *must* implement `call` method. Also you can access result direcly by using `data` method.
 
 For easier caching expirience we provide DSL to define you dependency for `cache_key` and `cache_tags` or/and `expire_in` (for invalidation)
 
@@ -65,8 +137,8 @@ class SomeController < ApplicationController
 end
 
 #/app/views/posts/index.html.haml
-- cache(@post_finder, tags: @post_finder.cache_tags, expire_in: @post_finder.expire_in) do
-   =render 'post' colection: @post_finder, as: :post # it will automaticly iterate over finder results by each method
+<% cache(@post_finder, tags: @post_finder.cache_tags, expire_in: @post_finder.expire_in) do %>
+   <%=render 'post' colection: @post_finder, as: :post%> # it will automaticly iterate over finder results by each method
 
 ```
 

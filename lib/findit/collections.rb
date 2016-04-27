@@ -36,9 +36,9 @@
 #    end
 #  end
 #
-#  #/app/views/posts/index.html.haml
-#  - cache(@post_finder, tags: @post_finder.cache_tags, expire_in: @post_finder.expire_in) do
-#    =render 'post' colection: @post_finder, as: :post
+#  #/app/views/posts/index.html.erb
+#  <% cache(@post_finder, tags: @post_finder.cache_tags, expire_in: @post_finder.expire_in) do %>
+#    <%= render 'post' colection: @post_finder, as: :post%>
 #
 #
 module Findit
