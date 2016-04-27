@@ -7,6 +7,9 @@ SimpleCov.start 'rails' do
 end
 
 require 'findit'
+require 'rails'
+require 'rails-cache-tags'
+require 'will_paginate'
 
 require 'combustion'
 
