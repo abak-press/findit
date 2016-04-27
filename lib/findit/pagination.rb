@@ -1,11 +1,5 @@
 module Findit
-  module Paginate
-    def paginate(collection, page, per_page, total)
-      ::WillPaginate::Collection.create(page, per_page, total) do |pager|
-        pager.replace(collection)
-      end
-    end
-
+  module Pagination
     def total_pages
       cache('total_pages') do
         data.total_pages

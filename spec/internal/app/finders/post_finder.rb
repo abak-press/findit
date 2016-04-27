@@ -1,6 +1,6 @@
 class PostFinder
   include Findit::Collections
-  include Findit::Paginate
+  include Findit::Pagination
 
   cache_key do
     [@user.id, @query]
@@ -21,7 +21,7 @@ class PostFinder
   def call
     scope = Post.where(user_id: @user.id)
     scope = scope.where('text like :query', query: "%#{@query}%") if @query.present?
-    scope = paginate(scope, @page, 5, scope.count)
+    scope = scope.paginate(page: @page, per_page: 5, total_entries: scope.count)
     scope
   end
 

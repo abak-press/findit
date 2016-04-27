@@ -1,7 +1,5 @@
 ActiveRecord::Schema.define do
-  create_table :users do |t|
-    t.timestamps
-  end
+  create_table :users, &:timestamps
 
   create_table :posts do |t|
     t.column :user_id, :integer

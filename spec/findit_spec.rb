@@ -9,7 +9,7 @@ RSpec.describe Findit do
   let!(:user_post_2) { Post.create(user_id: user.id, text: 'Some post') }
   let!(:other_user_post_0) { Post.create(user_id: other_user.id, text: 'simplest post for other user') }
 
-  let(:finder) {PostFinder.new(finder_user, query: query) }
+  let(:finder) { PostFinder.new(finder_user, query: query) }
   let(:query) { 'simpl' }
   let(:finder_user) { user }
 
@@ -33,7 +33,7 @@ RSpec.describe Findit do
 
   describe '#cache_tags' do
     it 'return proper one' do
-      expect(finder.cache_tags).to eq({user_id: user.id})
+      expect(finder.cache_tags).to eq(user_id: user.id)
     end
   end
 
@@ -51,19 +51,22 @@ RSpec.describe Findit do
   end
 
   describe '#total_entries' do
-    let(:cache_key) { cache_key = ActiveSupport::Cache.expand_cache_key([user.id, query]) }
+    let(:cache_key) { ActiveSupport::Cache.expand_cache_key([user.id, query]) }
     it 'cache method' do
-      expect(Rails.cache).to receive(:fetch).with("#{cache_key}/total_entries", cache_tags: {user_id: user.id}, expire_in: 30.minutes)
+      expect(finder.total_entries).to eq 2
+      expect(Rails.cache).to \
+        receive(:fetch).with("#{cache_key}/total_entries", cache_tags: {user_id: user.id}, expire_in: 30.minutes)
       finder.total_entries
     end
   end
 
   describe '#total_pages' do
-    let(:cache_key) { cache_key = ActiveSupport::Cache.expand_cache_key([user.id, query]) }
+    let(:cache_key) { ActiveSupport::Cache.expand_cache_key([user.id, query]) }
     it 'cache method' do
-      expect(Rails.cache).to receive(:fetch).with("#{cache_key}/total_pages", cache_tags: {user_id: user.id}, expire_in: 30.minutes)
+      expect(finder.total_pages).to eq 1
+      expect(Rails.cache).to \
+        receive(:fetch).with("#{cache_key}/total_pages", cache_tags: {user_id: user.id}, expire_in: 30.minutes)
       finder.total_pages
     end
   end
-
 end
