@@ -1,6 +1,6 @@
 # Findit
 
-Tried of writhing fat controllers? But you must do all these queries.. There is a solution, you separate Finder class.
+Tried of writhing fat controllers? But you must do all these queries.. There is a solution, move all this stuff to Finder class.
 
 Itstead of writing
 
