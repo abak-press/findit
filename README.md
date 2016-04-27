@@ -60,7 +60,7 @@ And that it! Now you can iterate over finder results by simple each:
   print d.description
 end
 ```
-or perform caching like you'll do it with ActiveRecord
+or perform caching like ActiveRecord::Base
 ```ruby
 # app/some_view
 <% cache @scope do %>
