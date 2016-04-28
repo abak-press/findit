@@ -53,32 +53,11 @@ module Findit
           @cache_key ||= ActiveSupport::Cache.expand_cache_key(instance_exec(&block))
         end
       end
-
-      def cache_tags(&block)
-        define_method :cache_tags do
-          @cache_tags ||= instance_exec(&block)
-        end
-      end
-
-      def expire_in(arg)
-        define_method :expire_in do
-          @expire_in ||= arg
-        end
-      end
     end
 
     def call
     end
     undef :call
-
-    def cache(key_path)
-      options = {}
-      options[:cache_tags] = cache_tags if respond_to?(:cache_tags)
-      options[:expire_in] = expire_in if respond_to?(:expire_in)
-      Rails.cache.fetch("#{cache_key}/#{key_path}", options) do
-        yield
-      end
-    end
 
     def data
       return @data if defined?(@data)

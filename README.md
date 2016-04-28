@@ -91,11 +91,35 @@ Or install it yourself as:
 
 ### Collections
 
-It makes Finder work as Enumerator. Result can be accessed with `each`, `[]` and `size` methods, but to make things work you *must* implement `call` method. Also you can access result direcly by using `data` method.
+It makes Finder work as Enumerator.
+Result can be accessed with `each`, `[]` and `size` methods, but to make things work you *must* implement `call` method.
+```
+  class PostFinder
+    incliude Findit::Collections
 
-For easier caching expirience we provide DSL to define you custom `cache_key`, `cache_tags` or/and `expire_in` (for invalidation)
+    def call
+      Post.where(user_id: 1)
+    end
+  end
 
-Full example with [rails-cache-tags](https://github.com/take-five/rails-cache-tags):
+  @posts = PostFinder.new
+
+  # load all matching posts and iterate over collection
+  @posts.each do |post|
+    print post.title
+  end
+
+  @posts[10] # get 10 element of posts
+
+  @posts.size # size of PostFinder results
+
+  # Also you can access result direcly by using `data` method.
+  @posts.data # access to all posts
+
+```
+
+For easier caching expirience we provide DSL to define you custom `cache_key`
+
 ```ruby
 #/app/finders/posts_finders.rb
 class PostFinder
@@ -104,13 +128,6 @@ class PostFinder
   cache_key do
     [@user.id, @query] # here you put any stuff that result of finder depend on it
   end
-
-  cache_tags do
-    {user_id: @user.id} # cache tags for invalidation from rails-cache-tags gem
-  end
-
-  # Or/And you can use time invalidation
-  expire_in 30.minutes # just value
 
   # custom initializer, do whatever you want here
   def initialize(user, options = {})
@@ -134,61 +151,8 @@ class PostsController < ApplicationController
 end
 
 #/app/views/posts/index.html.haml
-<% cache(@posts, tags: @posts.cache_tags, expire_in: @posts.expire_in) do %>
+<% cache(@posts, expire_in: 30.minutes) do %>
    <%=render 'post' colection: @posts, as: :post%> # it will automaticly iterate over finder results by each method
-
-```
-
-### Pagination Caching
-Implement page and per_page with defaults 1 and 30 respectively. Also it adds caching of [will_paginate](https://github.com/mislav/will_paginate) `total_pages` and `total_entries` methods.
-To use it you *must* implement `data` method. Or you can combine it with Collections described earlier.
-
-Example uage with Collection
-```ruby
-# /app/finders/post_finder.rb
-class PostFinder
-  include Findit::Collection
-  include Findit::Pagination
-
-  cache_key do
-    ...
-  end
-
-  expire_in do
-    ...
-  end
-
-  def initialize(options)
-    @user = options.fetch(:user)
-    @page = options[:page] if options[:page].present?
-    @per_page = options[:per_page] if options[:per_page].present?
-  end
-
-  def call
-    scope = Post.where(user: user)
-    scope.paginate(page, per_page, scope.count)
-    scope
-  end
-end
-
-# /app/controllers/posts_controller.rb
-class PostsController < ApplicationController
-  def index
-    @posts = PostFinder(
-      user: current_user
-      page: params[:page]
-    )
-
-    # Queries will run only when on non-cached records
-    response.headers['X-TOTAL-PAGES'] = @posts.total_pages
-    response.headers['X-TOTAL-ENTRIES'] = @posts.total_entries
-  end
-end
-
-# /app/views/posts/index.json.jbuilder
-json.cache! @posts, expire_in: @posts.expire_in do
-  json.partial! 'post', collection: @posts, as: :post
-end
 ```
 
 ## Contributing

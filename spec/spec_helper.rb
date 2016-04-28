@@ -1,15 +1,12 @@
 require 'bundler/setup'
 require 'simplecov'
 SimpleCov.start 'rails' do
-  minimum_coverage 90
+  minimum_coverage 99
 
   add_filter 'findit/version'
 end
 
 require 'findit'
-require 'rails'
-require 'rails-cache-tags'
-require 'will_paginate'
 
 require 'combustion'
 
