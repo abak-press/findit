@@ -44,7 +44,7 @@ module Findit
     extend ActiveSupport::Concern
 
     included do
-      delegate :each, :[], :size, to: :data
+      delegate :each, :[], :size, :empty?, to: :data
     end
 
     module ClassMethods
