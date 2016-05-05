@@ -1,8 +1,8 @@
 # Findit
 
-Tired of writing fat controllers? But you must do all these queries.. There is a solution, move it to a Finder class.
+Tired of writing fat controllers? But you must do all these queries.. There is a solution, move it to a special Finder class!
 
-Don't write this:
+Stop writing this:
 
 ```ruby
 class SomeController
@@ -47,7 +47,9 @@ class SomeFinder
     # some initialize, maybe params parse
   end
 
-  def call
+  private
+
+  def find
     # put here you find logic
   end
 end
@@ -91,13 +93,15 @@ Or install it yourself as:
 
 ### Collections
 
-It makes Finder work as Enumerator.
-Result can be accessed with `each`, `[]` and `size` methods, but to make things work you *must* implement `call` method.
+It makes Finder work as Enumerator with lazy load.
+Result can be accessed with `each`, `[]` and `size` methods, but to make things work you *must* implement `find` method.
 ```
   class PostFinder
     incliude Findit::Collections
 
-    def call
+    private # make it private, so no one call it without lazy load
+
+    def find
       Post.where(user_id: 1)
     end
   end
@@ -135,8 +139,9 @@ class PostFinder
     @query = options[:query]
   end
 
+  private
   # Here we fetch results. You MUST implement it
-  def call
+  def find
     scope = scope.where(user_id: @user.id)
     scope = scope.where('description like :query', query: @query) if @query.present?
     scope
