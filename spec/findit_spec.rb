@@ -27,7 +27,7 @@ RSpec.describe Findit do
 
   describe '#cache_key' do
     it 'returns key by params' do
-      expect(finder.cache_key).to eq "#{user.id}/#{query}"
+      expect(finder.cache_key).to eq "post_finder/#{user.id}/#{query}"
     end
   end
 

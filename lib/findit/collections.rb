@@ -50,7 +50,7 @@ module Findit
     module ClassMethods
       def cache_key(&block)
         define_method :cache_key do
-          @cache_key ||= ActiveSupport::Cache.expand_cache_key(instance_exec(&block))
+          @cache_key ||= ActiveSupport::Cache.expand_cache_key(instance_exec(&block), self.class.name.underscore)
         end
       end
     end
