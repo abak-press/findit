@@ -9,18 +9,14 @@
 #      [@user.id, @query]
 #    end
 #
-#    cache_tags do
-#      {user_id: @user.id}
-#    end
-#
-#    expire_in 30.minutes
-#
 #    def initialize(user, options = {})
 #      @user = user
 #      @query = options[:query]
 #    end
 #
-#    def call
+#    private
+#
+#    def find
 #      scope = scope.where(user_id: @user.id)
 #      scope = scope.where('description like :query', query: @query) if @query.present?
 #      scope
@@ -44,7 +40,7 @@ module Findit
     extend ActiveSupport::Concern
 
     included do
-      delegate :each, :[], :size, :empty?, to: :data
+      delegate :each, :[], :size, :empty?, to: :call
     end
 
     module ClassMethods
@@ -55,13 +51,13 @@ module Findit
       end
     end
 
-    def call
+    def find
     end
-    undef :call
+    undef :find
 
-    def data
+    def call
       return @data if defined?(@data)
-      @data = call
+      @data = find
     end
   end
 end
