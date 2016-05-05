@@ -134,8 +134,8 @@ class PostFinder
   end
 
   # custom initializer, do whatever you want here
-  def initialize(user, options = {})
-    @user = user
+  def initialize(options = {})
+    @user = options.fetch(:user)
     @query = options[:query]
   end
 
