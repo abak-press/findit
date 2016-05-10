@@ -155,9 +155,51 @@ class PostsController < ApplicationController
   end
 end
 
-#/app/views/posts/index.html.haml
+#/app/views/posts/index.html.erb
 <% cache(@posts, expire_in: 30.minutes) do %>
-   <%=render 'post' colection: @posts, as: :post%> # it will automaticly iterate over finder results by each method
+   <%=render 'post', collection: @posts, as: :post%> # it will automaticly iterate over finder results by each method
+```
+
+## WillPaginate
+
+It adds delegation of [will_paginate](https://github.com/mislav/will_paginate) methods to finder.
+
+Example usage:
+
+```ruby
+# app/finders/post_finder.rb
+class PostFinder
+  include Findit::Collection
+  include Findit::WillPaginate
+
+  cache_key do
+    [@page, @per_page]
+  end
+
+  def initialize(page, per_page)
+    @page = page
+    @per_page = per_page
+  end
+
+  private
+
+  def find
+    scope = Post.paginate(per_page: per_page, page: page)
+  end
+end
+
+# app/controllers/posts_controller.rb
+
+class PostsController < ApplicationController
+  def index
+    @posts = PostFinder.new(params[:page], params[:per_page])
+  end
+end
+
+# app/views/posts/index.html.erb
+<% cache(@posts, expire_in: 30.minutes) do %>
+  <%= render 'post', collection: @posts, as: :post %>
+  <%= will_paginate @posts %>
 ```
 
 ## Contributing

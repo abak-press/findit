@@ -9,6 +9,7 @@ end
 require 'findit'
 
 require 'combustion'
+require 'will_paginate'
 
 Combustion.initialize! :all
 
