@@ -160,7 +160,7 @@ end
    <%=render 'post', collection: @posts, as: :post%> # it will automaticly iterate over finder results by each method
 ```
 
-## WillPaginate
+### WillPaginate
 
 It adds delegation of [will_paginate](https://github.com/mislav/will_paginate) methods to finder.
 
@@ -200,6 +200,33 @@ end
 <% cache(@posts, expire_in: 30.minutes) do %>
   <%= render 'post', collection: @posts, as: :post %>
   <%= will_paginate @posts %>
+```
+
+### Single
+
+Adds DSL for cache_key on Finder with single element to find.
+
+Example usage:
+
+```ruby
+# app/finders/post_finder.rb
+class PostsFinder
+  include Findit::Single
+
+  cache_key do
+    @user
+  end
+
+  def initialize(user)
+    @user = user
+  end
+
+  private
+
+  def find
+    Post.where(user: user).last
+  end
+end
 ```
 
 ## Contributing
