@@ -1,0 +1,12 @@
+version: '2'
+
+services:
+  app:
+    volumes:
+      - .:/app
+      - bundler-data:/bundle
+
+volumes:
+  bundler-data:
+    external:
+      name: bundler_data
