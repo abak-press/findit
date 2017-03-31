@@ -36,6 +36,11 @@ module Findit
   module Single
     extend ActiveSupport::Concern
 
+    included do
+      include ActiveSupport::Callbacks
+      define_callbacks :find
+    end
+
     module ClassMethods
       def cache_key(&block)
         define_method :cache_key do
@@ -50,7 +55,8 @@ module Findit
 
     def call
       return @data if defined?(@data)
-      @data = find
+      res = run_callbacks(:find) { find }
+      @data ||= res
     end
     alias_method :load, :call
   end

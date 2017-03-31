@@ -37,10 +37,10 @@
 module Findit
   module Collections
     include Enumerable
-    include ::Findit::Single
     extend ActiveSupport::Concern
 
     included do
+      include ::Findit::Single
       delegate :each, :[], :size, :empty?, :to_ary, :to_a, to: :call
     end
   end
