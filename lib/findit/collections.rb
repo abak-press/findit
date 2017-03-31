@@ -37,27 +37,11 @@
 module Findit
   module Collections
     include Enumerable
+    include ::Findit::Single
     extend ActiveSupport::Concern
 
     included do
       delegate :each, :[], :size, :empty?, :to_ary, :to_a, to: :call
-    end
-
-    module ClassMethods
-      def cache_key(&block)
-        define_method :cache_key do
-          @cache_key ||= ActiveSupport::Cache.expand_cache_key(instance_exec(&block), self.class.name.underscore)
-        end
-      end
-    end
-
-    def find
-    end
-    undef :find
-
-    def call
-      return @data if defined?(@data)
-      @data = find
     end
   end
 end

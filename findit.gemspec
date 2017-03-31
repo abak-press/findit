@@ -25,8 +25,9 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec-rails", ">= 3.2"
   spec.add_development_dependency 'combustion', '>= 0.5'
   spec.add_development_dependency "appraisal", ">= 2.1.0"
-  spec.add_development_dependency 'pry-debugger'
+  spec.add_development_dependency 'pry'
   spec.add_development_dependency 'shoulda-matchers', '< 3.0.0'
   spec.add_development_dependency 'simplecov'
   spec.add_development_dependency 'sqlite3'
+  spec.add_development_dependency 'test-unit'
 end
