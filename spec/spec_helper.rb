@@ -11,10 +11,20 @@ require 'findit'
 require 'combustion'
 require 'will_paginate'
 
-Combustion.initialize! :all
+Combustion.initialize! :all do
+  config.cache_store = :memory_store
+end
 
 require 'rspec/rails'
 
 RSpec.configure do |config|
   config.use_transactional_fixtures = true
+
+  config.around(:each, :caching) do |example|
+    caching = ActionController::Base.perform_caching
+    ActionController::Base.perform_caching = example.metadata[:caching]
+    Rails.cache.clear
+    example.run
+    ActionController::Base.perform_caching = caching
+  end
 end

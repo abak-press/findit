@@ -229,6 +229,58 @@ class PostsFinder
 end
 ```
 
+### Cache
+
+Extends finder with cache possibility. Every call of `call` method will be cached in `Rails.cache`.
+Method `cache options` allows you to add custom options like `expire_in` or `tags` to `Rails.cache.fetch`.
+If you want to disable cache dependent of initialization arguments, you can use `cache?` DSL method.
+
+All in one Example:
+```ruby
+# app/finders/post_finder.rb
+class CachedPostsFinder
+  include Findit::Single
+  include Findit::Cache
+
+  cache_key do
+    @user
+  end
+
+  cache_options do
+    {expire_in: 15.minutes} # This will be directly passed to Rails.cache.fetch
+  end
+
+  def initialize(user)
+    @user = user
+  end
+
+  private
+
+  def find
+    Post.where(user: user)
+  end
+end
+```
+
+To disable cache for some reasone you can call special method without_cache:
+
+```ruby
+CachedFinder.new(user).without_cache.load # no cache
+
+CachedFinder.new(user).load - # will perform cache operations
+```
+
+
+If you want this functionality on Collections finder you can add extension `Findit::Collections` alongside with Cache:
+```ruby
+class SomeFinder
+  include Findit::Collections
+  include Findit::Cache
+
+  ...
+end
+```
+
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/findit.
+Bug reports and pull requests are welcome on GitHub at https://github.com/abak-press/findit.

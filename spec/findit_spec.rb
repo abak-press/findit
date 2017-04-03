@@ -46,6 +46,50 @@ RSpec.describe Findit do
     end
   end
 
+  context 'cache' do
+    describe '#call', caching: true do
+      context 'when caching is enabled' do
+        it 'caches result' do
+          expect(CachedPostFinder.new(user).call).to eq user_post_2
+          Post.create(user_id: user.id, text: 'Some post')
+          expect(CachedPostFinder.new(user).call).to eq user_post_2
+        end
+
+        it 'caches result for collection finder too' do
+          expect(CachedPostsFinder.new(user, query: 'simpl').map(&:id)).to(
+            match_array [user_post_0.id, user_post_1.id]
+          )
+
+          Post.create(user_id: user.id, text: 'simpliest post ever')
+
+          expect(CachedPostsFinder.new(user, query: 'simpl').map(&:id)).to(
+            match_array [user_post_0.id, user_post_1.id]
+          )
+        end
+      end
+
+      context 'when no_cache is set' do
+        it 'fetch result on every call' do
+          expect(CachedPostFinder.new(user).without_cache.call).to eq user_post_2
+          new_post = Post.create(user_id: user.id, text: 'Some post')
+          expect(CachedPostFinder.new(user).without_cache.call).to eq new_post
+        end
+
+        it 'fetch result for collection finder on every call' do
+          expect(CachedPostsFinder.new(user, query: 'simpl').without_cache.map(&:id)).to(
+            match_array [user_post_0.id, user_post_1.id]
+          )
+
+          new_post = Post.create(user_id: user.id, text: 'simpliest post ever')
+
+          expect(CachedPostsFinder.new(user, query: 'simpl').without_cache.map(&:id)).to(
+            match_array [user_post_0.id, user_post_1.id, new_post.id]
+          )
+        end
+      end
+    end
+  end
+
   context 'single' do
     let(:finder) { PostFinder.new(finder_user) }
     let(:finder_user) { user }
