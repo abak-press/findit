@@ -41,7 +41,7 @@ module Findit
 
     included do
       include ::Findit::Single
-      delegate :each, :[], :size, :empty?, :to_ary, :to_a, to: :call
+      delegate :each, :[], :size, :empty?, :to_ary, :to_a, :shift, to: :call
     end
   end
 end

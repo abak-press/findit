@@ -44,6 +44,15 @@ RSpec.describe Findit do
         expect(finder[0]).to eq other_user_post_0
       end
     end
+
+    describe '#shift' do
+      let(:finder) { ArrayPostsFinder.new(finder_user, query: query) }
+      let(:finder_user) { other_user }
+      it 'works as on array' do
+        expect(finder.shift).to eq other_user_post_0
+        expect(finder.shift).to be_nil
+      end
+    end
   end
 
   context 'cache' do
