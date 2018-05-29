@@ -31,7 +31,7 @@
 #  end
 #
 #  #/app/views/posts/index.html.erb
-#  <% cache(@posts, tags: @posts.cache_tags, expire_in: @posts.expire_in) do %>
+#  <% cache(@posts, tags: @posts.cache_tags, expires_in: @posts.expires_in) do %>
 #    <%= render 'post' colection: @posts, as: :post%>
 #
 module Findit

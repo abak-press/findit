@@ -29,7 +29,7 @@
 #  end
 #
 #  #/app/views/posts/show.html.erb
-#  <% cache(@post, expire_in: 15.minutes) do %>
+#  <% cache(@post, expires_in: 15.minutes) do %>
 #    <%= render 'post', post: @post.load%>
 #
 module Findit

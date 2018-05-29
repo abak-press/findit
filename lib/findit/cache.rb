@@ -14,7 +14,7 @@
 #    end
 #
 #    cache_options do
-#      {expire_in: 15.minutes}
+#      {expires_in: 15.minutes}
 #    end
 #
 #    private
