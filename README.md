@@ -156,7 +156,7 @@ class PostsController < ApplicationController
 end
 
 #/app/views/posts/index.html.erb
-<% cache(@posts, expire_in: 30.minutes) do %>
+<% cache(@posts, expires_in: 30.minutes) do %>
    <%=render 'post', collection: @posts, as: :post%> # it will automaticly iterate over finder results by each method
 ```
 
@@ -197,7 +197,7 @@ class PostsController < ApplicationController
 end
 
 # app/views/posts/index.html.erb
-<% cache(@posts, expire_in: 30.minutes) do %>
+<% cache(@posts, expires_in: 30.minutes) do %>
   <%= render 'post', collection: @posts, as: :post %>
   <%= will_paginate @posts %>
 ```
@@ -232,7 +232,7 @@ end
 ### Cache
 
 Extends finder with cache possibility. Every call of `call` method will be cached in `Rails.cache`.
-Method `cache options` allows you to add custom options like `expire_in` or `tags` to `Rails.cache.fetch`.
+Method `cache options` allows you to add custom options like `expires_in` or `tags` to `Rails.cache.fetch`.
 If you want to disable cache dependent of initialization arguments, you can use `cache?` DSL method.
 
 All in one Example:
@@ -247,7 +247,7 @@ class CachedPostsFinder
   end
 
   cache_options do
-    {expire_in: 15.minutes} # This will be directly passed to Rails.cache.fetch
+    {expires_in: 15.minutes} # This will be directly passed to Rails.cache.fetch
   end
 
   def initialize(user)
