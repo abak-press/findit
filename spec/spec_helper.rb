@@ -10,8 +10,11 @@ require 'findit'
 
 require 'combustion'
 require 'will_paginate'
+require 'pry-byebug'
 
-Combustion.initialize! :all do
+require 'active_record'
+
+Combustion.initialize! :active_record do
   config.cache_store = :memory_store
 end
 
